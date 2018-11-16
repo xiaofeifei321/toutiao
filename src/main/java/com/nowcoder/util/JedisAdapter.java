@@ -14,6 +14,7 @@ import redis.clients.jedis.*;
 import java.util.List;
 
 /**
+ *redis常用操作
  * PV  //讨论区里的浏览数在Redis中存储
  * 点赞 //点赞，userId放在Redis中
  * 关注 //人与人之间关注，关注者是个集合，放进Redis，如果取消关注，从集合中删除即可
@@ -22,7 +23,17 @@ import java.util.List;
  * 缓存 //牛客网上访问，打开网页用户头像，用户名昵称，如果用户不更新，用户信息等在MySQL上可以做一层缓存，如果用户没更新信息，可以直接从缓存读，如果缓存没有，直接去数据库取，大大降低数据库的压力。
  * 异步队列 //点了赞，谁评论了帖子，发生事件，放进redis，后面有线程去执行
  * 判题队列  //用户提交判题，放入判题队列，在Redis中，服务器连判题队列执行，如果碰到高峰期，可以加机器
- */
+ *
+ * Redis可以设置有效期，在登陆的时候可以用到，把用户登陆服务器下发的token存到Redis中，
+ * 设置过期时间，时间到自动删除了。比存在数据库中判断expired_time更方便。
+ *
+ * 在高并发的情况下，比如秒杀，很多用户访问网页，评论网页，我们要记录商品数，浏览量，评论数，
+ * 如果每一次请求后都去数据库中update字段，服务器很容易卡死。因为在更新数据库的时候，
+ * 对该字段的行是上锁的。解决的办法是将数组存到某一个地方，每次收到请求后服务器先记录，
+ * 每隔一段时间写回数据库中，这样用户看到的是一秒前的访问量，过了一秒，访问量蹭的上去了，
+ * 对于用户来说一秒反应是没什么感觉的，对于服务器能防止卡死。可以将值存到Redis中。
+ *
+ * */
 @Service
 public class JedisAdapter implements InitializingBean {
     private static final Logger logger = LoggerFactory.getLogger(JedisAdapter.class);
@@ -235,6 +246,11 @@ public class JedisAdapter implements InitializingBean {
         }
     }
 
+    /**
+     * /**
+     * 向Redis中Set集合添加值:点赞
+     * @return
+     */
     public long sadd(String key, String value) {
         Jedis jedis = null;
         try {
@@ -250,6 +266,13 @@ public class JedisAdapter implements InitializingBean {
         }
     }
 
+    /**
+     *   /**
+     * 移除：取消点赞
+     * @param key
+     * @param value
+     * @return
+     */
     public long srem(String key, String value) {
         Jedis jedis = null;
         try {
@@ -280,6 +303,7 @@ public class JedisAdapter implements InitializingBean {
         }
     }
 
+    //记录有多少人喜欢
     public long scard(String key) {
         Jedis jedis = null;
         try {

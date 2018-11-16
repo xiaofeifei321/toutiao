@@ -68,4 +68,9 @@ public class Message {
         }
         return String.format("%d_%d", toId, fromId);
     }
+
+
+    public void setConversationId(String conversationId) {
+        this.conversationId = conversationId;
+    }
 }

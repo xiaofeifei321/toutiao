@@ -1,7 +1,7 @@
 package com.nowcoder.util;
 
 /**
- * Created by nowcoder on 2016/7/13.
+ * RedisKeyUtil
  * 根据规范，生成一些key
  *
  */

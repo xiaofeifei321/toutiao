@@ -9,7 +9,7 @@ import java.util.Map;
  * Created by nowcoder on 2016/7/14.
  */
 /*
- *放在队列中，event发生什么事件
+ *发生的事件的数据都打包成一个Model(然后对这个model中数据进行序列化)
  */
 public class EventModel {
     //事件是什么类型的

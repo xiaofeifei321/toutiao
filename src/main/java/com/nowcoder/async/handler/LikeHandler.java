@@ -25,6 +25,10 @@ public class LikeHandler implements EventHandler {
     @Autowired
     UserService userService;
 
+    /**
+     * 具体的执行动作，具体的实现类，这个是点赞后要执行的行为，给别人发提醒。
+     * @param model
+     */
     @Override
     public void doHandle(EventModel model) {
         Message message = new Message();

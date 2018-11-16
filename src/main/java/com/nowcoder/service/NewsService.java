@@ -41,6 +41,12 @@ public class NewsService {
         return newsDAO.getById(newsId);
     }
 
+    /**
+     *上传到本地
+     * @param file
+     * @return
+     * @throws IOException
+     */
     public String saveImage(MultipartFile file) throws IOException {
        //文件名得到后缀名
         int dotPos = file.getOriginalFilename().lastIndexOf(".");

@@ -39,12 +39,17 @@ public class NewsController {
     @Autowired
     LikeService likeService;
 
+    /**
+     * 显示资讯详情
+     */
     @RequestMapping(path = {"/news/{newsId}"}, method = {RequestMethod.GET})
     public String newsDetail(@PathVariable("newsId") int newsId, Model model) {
         News news = newsService.getById(newsId);
         if (news != null) {
             int localUserId = hostHolder.getUser() != null ? hostHolder.getUser().getId() : 0;
             if (localUserId != 0) {
+                // 判断某个用户对某种元素特别喜欢  如果喜欢 返回1 不喜欢返回零
+                // ( 作用:我们进去页面当中，点过赞的话，显示赞同过)
                 model.addAttribute("like", likeService.getLikeStatus(localUserId, EntityType.ENTITY_NEWS, news.getId()));
             } else {
                 model.addAttribute("like", 0);
@@ -55,16 +60,22 @@ public class NewsController {
             for (Comment comment : comments) {
                 ViewObject vo = new ViewObject();
                 vo.set("comment", comment);
+                //没有用户重新登录
                 vo.set("user", userService.getUser(comment.getUserId()));
                 commentVOs.add(vo);
             }
             model.addAttribute("comments", commentVOs);
         }
+        //评论
         model.addAttribute("news", news);
+        //谁发布的东西
         model.addAttribute("owner", userService.getUser(news.getUserId()));
         return "detail";
     }
 
+    /**
+     * 增加评论
+     */
     @RequestMapping(path = {"/addComment"}, method = {RequestMethod.POST})
     public String addComment(@RequestParam("newsId") int newsId,
                              @RequestParam("content") String content) {
@@ -114,7 +125,7 @@ public class NewsController {
         try {
             //返回给用户一个图片的地址
             String fileUrl = newsService.saveImage(file);
-            //String fileUrl = qiniuService.saveImage(file);
+//            String fileUrl = qiniuService.saveImage(file);
             if (fileUrl == null) {
                 return ToutiaoUtil.getJSONString(1, "上传图片失败");
             }

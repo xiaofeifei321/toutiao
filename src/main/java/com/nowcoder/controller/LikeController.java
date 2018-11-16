@@ -27,6 +27,7 @@ public class LikeController {
     HostHolder hostHolder;
     @Autowired
     NewsService newsService;
+    //生产者
     @Autowired
     EventProducer eventProducer;
 
@@ -37,6 +38,9 @@ public class LikeController {
         // 更新喜欢数
         News news = newsService.getById(newsId);
         newsService.updateLikeCount(newsId, (int) likeCount);
+        //在controller中执行like喜欢动作的时候，会有一个EventModel模型，记录当下事件的所有信息，
+        // json序列化，存入redis缓存中。EventModel相关的属性有，活动类型EventType，触发者，
+        // 触发者，触发对象类型，触发对象拥有者，触发现场有哪些信息要保存map。
         eventProducer.fireEvent(new EventModel(EventType.LIKE)
                 .setEntityOwnerId(news.getUserId())
                 .setActorId(hostHolder.getUser().getId()).setEntityId(newsId));

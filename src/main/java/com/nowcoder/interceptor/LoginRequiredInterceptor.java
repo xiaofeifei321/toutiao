@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 /**
+ * 权限认证
  * 用户登录验证
  * 如果验证没有HostHolder，说明用户没登陆，就跳转到主页或者给出登陆页面。拦截器也先后执行顺序
  */

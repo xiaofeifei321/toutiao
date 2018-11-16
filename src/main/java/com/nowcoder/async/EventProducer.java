@@ -13,6 +13,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
  * 用这个类把需要异步的信息打包好，放进Redis的队列中。放入是吧EventModel序列化为JSON，
  * 存入Redis的列表中。
  */
+
+/**
+ * 将发生的事件推送到消息队列。
+ */
 @Service
 public class EventProducer {
     //把活动发到队列上去
@@ -22,6 +26,7 @@ public class EventProducer {
     public boolean fireEvent(EventModel eventModel) {
         try {
             String json = JSONObject.toJSONString(eventModel);
+            //产生key重复性的问题
             String key = RedisKeyUtil.getEventQueueKey();
             jedisAdapter.lpush(key, json);
             return true;

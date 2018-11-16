@@ -20,7 +20,8 @@ public class ToutiaoWebConfiguration extends WebMvcConfigurerAdapter {
     LoginRequiredInterceptor loginRequiredInterceptor;
 
     /**
-     * 注入拦截器
+     *拦截位置放在登陆验证PassportInterceptor的后面，通过登陆验证看HostHolder类中有没有线程本地变量user类，如果有，
+     * 证明能确定是谁登陆的。如果没有，那没有权限访问/setting*相关的页面。
      */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {

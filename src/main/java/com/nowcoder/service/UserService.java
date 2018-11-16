@@ -47,6 +47,9 @@ public class UserService {
         // 密码强度
         user = new User();
         user.setName(username);
+        //UUID.randomUUID().toString()它保证对在同一时空中的所有机器都是唯一的，是由一个16个字节，32位的十六进制数字组成
+        //当前日期时间+时钟序列（全局唯一的IEEE机器识别号（如果有网卡，从网卡获得，没有网卡以其他方式获得））
+        // substring  截取0-5相应的位置
         user.setSalt(UUID.randomUUID().toString().substring(0, 5));
         String head = String.format("http://images.nowcoder.com/head/%dt.png", new Random().nextInt(1000));
         user.setHeadUrl(head);
@@ -72,14 +75,11 @@ public class UserService {
             map.put("msgpwd", "密码不能为空");
             return map;
         }
-
         User user = userDAO.selectByName(username);
-
         if (user == null) {
             map.put("msgname", "用户名不存在");
             return map;
         }
-
         if (!ToutiaoUtil.MD5(password+user.getSalt()).equals(user.getPassword())) {
             map.put("msgpwd", "密码不正确");
             return map;
@@ -101,7 +101,9 @@ public class UserService {
         ticket.setExpired(date);
         ticket.setStatus(0);
         ticket.setTicket(UUID.randomUUID().toString().replaceAll("-", ""));
+        //将生成的ticker插入数据库中
         loginTicketDAO.addTicket(ticket);
+        //uuid生成，保证Ticker唯一
         return ticket.getTicket();
     }
 

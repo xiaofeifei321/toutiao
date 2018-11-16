@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
-
 /**
  * Created by nowcoder on 2016/7/14.
  */
@@ -41,6 +40,9 @@ public class LoginExceptionHandler implements EventHandler{
                 "mails/welcome.html", map);
     }
 
+    /**
+     * 每个实现类对应处理的活动类型。反过来记录在config哈希表中
+     */
     @Override
     public List<EventType> getSupportEventTypes() {
         return Arrays.asList(EventType.LOGIN);
